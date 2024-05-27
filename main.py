@@ -142,8 +142,10 @@ def mark_assign_order():
                 if not any(dic["carrier_id"] == carrier_id for dic in data):
                     proceed_flag=0
                     return "This carrier cant carry any more orders"
-                
-                update_query=text('UPDATE orders SET status=2, carrier_id='+str(carrier_id)+' WHERE id='+str(order_id))
+                if(len(result)==0):
+                    query=text('INSERT INTO carrier_availability (carrier_id,no_of_orders_assigned,order_assign_date)VALUES ('+str(carrier_id)+',1,NOW())')
+                else:
+                    query=text('UPDATE orders SET status=2, carrier_id='+str(carrier_id)+' WHERE id='+str(order_id))
                 con.execute(update_query)
                 update_query_2=text('UPDATE carrier_availability SET no_of_orders_assigned=no_of_orders_assigned+1 WHERE DATE(order_assign_date)=DATE(NOW()) AND carrier_id='+str(carrier_id))
                 con.execute(update_query_2)
