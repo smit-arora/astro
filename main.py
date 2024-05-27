@@ -55,12 +55,7 @@ def mark_order_shipped():
 
 @app.route('/orders/waitingshipping', methods=['GET'])
 def get_waiting_shipping():
-    # conn = get_db_connection()
-    # cursor = conn.cursor(dictionary=True)
-    # cursor.execute("SELECT * FROM Orders WHERE shipped = FALSE")
-    # orders = cursor.fetchall()
-    # conn.close()
-    # return jsonify(orders)
+
     engine=db_connect()
     with engine.connect() as con:
         check_query=text('SELECT id,merchant_id,order_created_at FROM orders where status=2 AND carrier_id is not null and order_shipped_at is null')
