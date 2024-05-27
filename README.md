@@ -32,9 +32,9 @@ Table carrier_availaibility - Check the carrier availability, contains carrier i
 
 
 ## Import Database- 
-This branch is for working on the project using RawSQL.
+This branch is for working on the project using SqlAlchemy ORM.
 
-To initialize the project, you have to first import the database-
+To initialize the project, you have to first create the database, this file will simply create the database flow_shipping_orm
 
 ```mysql < initialize/flow_shipping.sql```
 
@@ -46,7 +46,7 @@ Next Create DB user that will be accessing the database
 
 ```
 CREATE USER 'flow_shipping'@'%' IDENTIFIED BY 'PAss123';
-GRANT ALL PRIVILEGES ON flow_shipping.* TO 'flow_shipping'@'%';
+GRANT ALL PRIVILEGES ON flow_shipping_orm.* TO 'flow_shipping'@'%';
 ```
 
 
