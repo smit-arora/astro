@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.3.0, for macos14.2 (arm64)
 --
--- Host: localhost    Database: flow_shipping
+-- Host: localhost    Database: flow_shipping_orm
 -- ------------------------------------------------------
 -- Server version	8.3.0
 
@@ -16,10 +16,10 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `flow_shipping`
+-- Current Database: `flow_shipping_orm`
 --
 
-USE `flow_shipping`;
+USE `flow_shipping_orm`;
 
 --
 -- Dumping data for table `carrier`
@@ -37,7 +37,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `carrier_availability` WRITE;
 /*!40000 ALTER TABLE `carrier_availability` DISABLE KEYS */;
-INSERT INTO `carrier_availability` VALUES (1,1,240,'2024-05-26'),(2,1,201,'2024-05-27');
+INSERT INTO `carrier_availability` VALUES (1,1,250,'2024-05-26 00:00:00');
 /*!40000 ALTER TABLE `carrier_availability` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -100,4 +100,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-27  9:38:28
+-- Dump completed on 2024-05-27  9:09:33
