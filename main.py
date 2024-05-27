@@ -1,11 +1,12 @@
 
 from flask import Flask, jsonify, request 
 from sqlalchemy import create_engine,text
+from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.schema import Index
-from sqlalchemy import Column, Integer,BigInteger, String, DateTime, Numeric, ForeignKey
+from sqlalchemy import Column, Integer,BigInteger, String, DateTime, Numeric, ForeignKey,Date
 from sqlalchemy.ext.declarative import declarative_base
-import datetime
+from datetime import date,datetime
 import json
 
 Base = declarative_base()
@@ -40,7 +41,7 @@ class Carrier_Availability(Base):
     id = Column(BigInteger, primary_key=True)
     carrier_id = Column(BigInteger, ForeignKey ("carrier.id"))
     no_of_orders_assigned = Column(Integer)
-    order_assign_date = Column(DateTime)
+    order_assign_date = Column(Date)
     carrier_relationship = relationship("Carrier")
     
 class Orders (Base):
@@ -99,7 +100,7 @@ def mark_order_shipped():
     
     if(order.carrier_id != None):
         order.status=3
-        order.shipped_date=shipped_date
+        order.order_shipped_at=datetime.strptime(shipped_date.replace('"',''), "%Y-%m-%d %H:%M:%S")
         session.commit()
         return 'ORDER MARKED AS SHIPPED'
     else:
@@ -124,7 +125,6 @@ def mark_assign_order():
     order_id = request.json['order_id']
     carrier_id = request.json['carrier_id']
     session=db_connect()
-    # rder=session.query(Orders).get(order_id)
     order=session.query(Orders).get(order_id)
     if(order.status != 1):
         return "This order is marked as shipped or assigned to another carrier"
@@ -145,6 +145,19 @@ def mark_assign_order():
                 order=session.query(Orders).get(order_id)
                 order.status=2
                 order.carrier_id=carrier_id
+               
+                print("====")
+                print(date.today())
+                carrier_avail=session.query(Carrier_Availability).filter(Carrier_Availability.carrier_id==carrier_id).filter(func.DATE(Carrier_Availability.order_assign_date)==date.today())
+                print(carrier_avail.count())
+               
+                if (carrier_avail.count()!=0):
+                    print("----")
+                    session.query(Carrier_Availability).filter(Carrier_Availability.carrier_id==carrier_id).filter(func.DATE(Carrier_Availability.order_assign_date)==date.today()).update({Carrier_Availability.no_of_orders_assigned: Carrier_Availability.no_of_orders_assigned+1})
+                else:
+                    carrier_avail_new = Carrier_Availability(carrier_id=carrier_id, no_of_orders_assigned=1, order_assign_date=date.today())
+                    session.add(carrier_avail_new)
+                    print("<<<<")
                 session.commit()
                 return 'ORDER MARKED AS SHIPPED'          
 
@@ -164,7 +177,6 @@ def list_availiable_carrier():
             result_list.append('{"carrier_id":'+str(i.id)+',"carrier_name":"'+i.name+'","order_remaining":'+str(i.order_remaining)+'}')
         return str(result_list).replace("'","")
         
-
 
 
 if __name__ == '__main__': 
